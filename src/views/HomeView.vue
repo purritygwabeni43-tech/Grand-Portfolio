@@ -1,6 +1,10 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import portrait from '../assets/purrity-art.png'
+import fitWellThumbnail from '../assets/fitwell.png'
+import marketPulseThumbnail from '../assets/market pulse.png'
+import modernTechThumbnail from '../assets/modern tech.png'
+import rentosphereThumbnail from '../assets/rentosphere.png'
 
 const sections = [
   { id: 'home', label: 'Home', number: '01', icon: '⌂', building: 'SAFEHOUSE', color: 'mint' },
@@ -12,24 +16,90 @@ const sections = [
 
 const profile = {
   name: 'Purrity Gwabeni',
-  role: 'Creative developer',
-  location: 'Your city, your timezone',
-  tagline: 'Building things worth exploring.',
+  role: 'Fullstack developer',
+  tagline: 'I code what I see.',
   about:
-    'I’m a curious creative who loves turning bold ideas into thoughtful digital experiences. This is my little corner of the city — take a look around.',
+    'I’m a fullstack developer who enjoys shaping clear ideas into useful, polished web experiences. I work across the stack with JavaScript, Python, and PHP, and love learning the tools that make good products feel effortless.',
 }
 
+const skills = ['JavaScript', 'Vue.js', 'Python', 'PHP', 'Node.js', 'MySQL', 'Git']
+
 const projects = [
-  { name: 'Project One', type: 'WEB EXPERIENCE', year: '2025', tone: 'project-sunset', mark: '01' },
-  { name: 'Project Two', type: 'CREATIVE DEVELOPMENT', year: '2025', tone: 'project-violet', mark: '02' },
-  { name: 'Project Three', type: 'DIGITAL PRODUCT', year: '2024', tone: 'project-cyan', mark: '03' },
+  {
+    name: 'FitWell',
+    type: 'FITNESS COACHING WEBSITE',
+    year: 'LIVE',
+    tone: 'project-sunset',
+    image: fitWellThumbnail,
+    mark: '01',
+    description: 'A fitness coaching website for training, nutrition, and wellness support.',
+    link: 'https://fittwell-coach.netlify.app/',
+  },
+  {
+    name: 'Market Pulse',
+    type: 'PRICE MONITORING DASHBOARD',
+    year: 'LIVE',
+    tone: 'project-violet',
+    image: marketPulseThumbnail,
+    mark: '02',
+    description: 'A dashboard for monitoring retail goods and digital asset prices.',
+    link: 'https://market-pulse-11gq.onrender.com/',
+  },
+  {
+    name: 'ModernTech HR Portal',
+    type: 'HR OPERATIONS DASHBOARD',
+    year: 'LIVE',
+    tone: 'project-cyan',
+    image: modernTechThumbnail,
+    mark: '03',
+    description: 'An HR dashboard for employee operations, attendance, and performance.',
+    link: 'https://modern-tech-solutions00.netlify.app/',
+  },
+  {
+    name: 'Rentosphere',
+    type: 'RENTAL MARKETPLACE',
+    year: 'LIVE',
+    tone: 'project-sunset',
+    image: rentosphereThumbnail,
+    mark: '04',
+    description: 'A rental marketplace for tools, trailers, appliances, and event equipment.',
+    link: 'https://e-commerce-project-ca0q.onrender.com/',
+  },
 ]
 
 const certificates = [
-  { name: 'Certificate One', issuer: 'Add issuing organization', year: '2025', mark: '01' },
-  { name: 'Certificate Two', issuer: 'Add issuing organization', year: '2024', mark: '02' },
-  { name: 'Certificate Three', issuer: 'Add issuing organization', year: '2024', mark: '03' },
+  {
+    name: 'YouthCode Software Development Project',
+    issuer: 'Life Choices Academy · YouthCode',
+    year: '2 OCT 2026',
+    mark: '01',
+  },
+  {
+    name: 'Coding Wizard — Certificate of Excellence',
+    issuer: 'YouthCode Project',
+    year: '2 OCT 2026',
+    mark: '02',
+  },
+  {
+    name: 'Introduction to Cybersecurity',
+    issuer: 'Cisco Networking Academy',
+    year: '31 AUG 2026',
+    mark: '03',
+  },
+  {
+    name: 'Introduction to Data Science',
+    issuer: 'Cisco Networking Academy',
+    year: '6 AUG 2026',
+    mark: '04',
+  },
 ]
+
+const contactLinks = [
+  { label: 'GitHub', href: 'https://github.com/purritygwabeni43-tech' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/purrity-gwabeni-24124a403' },
+  { label: 'Email', href: 'mailto:purritygwabeni43@gmail.com' },
+]
+const email = 'purritygwabeni43@gmail.com'
 
 const isLoading = ref(true)
 const activeSection = ref('home')
@@ -183,9 +253,9 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
             <img :src="portrait" alt="Illustrated portrait of Purrity Gwabeni" />
             <div>
               <h3>{{ profile.name }}</h3>
-              <p class="about-role">{{ profile.role }} <span>·</span> {{ profile.location }}</p>
+              <p class="about-role">{{ profile.role }}</p>
               <p>{{ profile.about }}</p>
-              <div class="skill-list"><span>DESIGN</span><span>DEVELOPMENT</span><span>IDEAS</span></div>
+              <div class="skill-list"><span v-for="skill in skills" :key="skill">{{ skill }}</span></div>
             </div>
           </div>
         </template>
@@ -194,11 +264,11 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
           <span class="panel-kicker">SELECTED SIDE QUESTS</span>
           <h2>Made with <em>purpose.</em></h2>
           <div class="project-grid">
-            <article v-for="project in projects" :key="project.name" class="project-card">
-              <div class="project-art" :class="project.tone"><span>{{ project.mark }}</span><b>YOUR<br />PROJECT</b><i>↗</i></div>
+            <a v-for="project in projects" :key="project.name" class="project-card" :href="project.link" target="_blank" rel="noopener noreferrer">
+              <div class="project-art" :class="project.tone"><img :src="project.image" :alt="`${project.name} website thumbnail`" loading="lazy" /><span>{{ project.mark }}</span><i>↗</i></div>
               <div class="project-meta"><div><h3>{{ project.name }}</h3><span>{{ project.type }}</span></div><small>{{ project.year }}</small></div>
-              <p>Add a short description and link to this project.</p>
-            </article>
+              <p>{{ project.description }}</p>
+            </a>
           </div>
         </template>
 
@@ -228,9 +298,11 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
           <span class="panel-kicker">YOUR NEXT MISSION STARTS HERE</span>
           <h2>Let’s make something <em>great.</em></h2>
           <p class="contact-copy">Have a project in mind, an opportunity, or just want to say hello? My inbox is open.</p>
-          <a class="contact-cta" href="mailto:your.email@example.com">GET IN TOUCH <span>↗</span></a>
-          <p class="contact-note">Remember to update the email address before publishing.</p>
-          <div class="contact-details"><span>BASED IN <b>{{ profile.location }}</b></span><span>STATUS <b><i></i> OPEN TO OPPORTUNITIES</b></span></div>
+          <a class="contact-cta" :href="`mailto:${email}`">GET IN TOUCH <span>↗</span></a>
+          <div class="contact-details">
+            <span>TECH STACK <b>{{ skills.join(' · ') }}</b></span>
+            <span>FIND ME <b><a v-for="(link, index) in contactLinks" :key="link.label" :href="link.href" target="_blank" rel="noopener noreferrer">{{ index ? ' · ' : '' }}{{ link.label }}</a></b></span>
+          </div>
         </template>
       </section>
     </section>
@@ -247,14 +319,39 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
       <button class="start-exploring" type="button" @click="visitSection('projects')"><span>START EXPLORING</span><b>↗</b></button>
     </section>
 
-    <footer class="site-footer"><span>© {{ new Date().getFullYear() }} PURRITY GWABENI</span><span>MADE WITH A LITTLE VICE CITY MAGIC <b>✦</b></span><span>PRESS <kbd>↑</kbd><kbd>↓</kbd> TO EXPLORE</span></footer>
+    <footer class="site-footer">
+      <span>© {{ new Date().getFullYear() }} PURRITY GWABENI</span>
+      <nav class="footer-socials" aria-label="Social links">
+        <a
+          v-for="link in contactLinks"
+          :key="link.label"
+          :href="link.href"
+          :aria-label="link.label"
+          :title="link.label"
+          :target="link.label === 'Email' ? undefined : '_blank'"
+          :rel="link.label === 'Email' ? undefined : 'noopener noreferrer'"
+        >
+          <svg v-if="link.label === 'GitHub'" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 .9a11.1 11.1 0 0 0-3.51 21.63c.55.1.76-.24.76-.53v-2.08c-3.1.68-3.76-1.32-3.76-1.32-.5-1.3-1.24-1.65-1.24-1.65-1.02-.7.08-.69.08-.69 1.13.08 1.72 1.16 1.72 1.16 1 .1.86 2.36 3.43 1.67.1-.72.4-1.22.72-1.5-2.48-.28-5.08-1.24-5.08-5.52 0-1.22.44-2.22 1.16-3-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.05 1.15a10.6 10.6 0 0 1 5.55 0c2.1-1.44 3.04-1.15 3.04-1.15.61 1.55.23 2.69.12 2.98.72.78 1.15 1.78 1.15 3 0 4.3-2.6 5.23-5.1 5.51.4.35.76 1.02.76 2.06V22c0 .3.2.64.77.53A11.1 11.1 0 0 0 12 .9Z"/>
+          </svg>
+          <svg v-else-if="link.label === 'LinkedIn'" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M20.45 2H3.55C2.69 2 2 2.68 2 3.52v16.96c0 .84.69 1.52 1.55 1.52h16.9c.86 0 1.55-.68 1.55-1.52V3.52c0-.84-.69-1.52-1.55-1.52ZM7.93 18.34H4.96V9.5h2.97v8.84ZM6.44 8.3a1.72 1.72 0 1 1 0-3.44 1.72 1.72 0 0 1 0 3.44Zm11.9 10.04h-2.96v-4.3c0-1.03-.02-2.35-1.43-2.35-1.43 0-1.65 1.12-1.65 2.28v4.37H9.34V9.5h2.84v1.21h.04c.4-.7 1.36-1.43 2.8-1.43 3 0 3.56 1.98 3.56 4.56v4.5Z"/>
+          </svg>
+          <svg v-else viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M3.5 5h17A1.5 1.5 0 0 1 22 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11A1.5 1.5 0 0 1 3.5 5Zm8.5 7.1L19.1 7H4.9l7.1 5.1Zm0 2.1L4 8.5v9.1h16V8.5l-8 5.7Z"/>
+          </svg>
+        </a>
+      </nav>
+      <span class="footer-credit">MADE WITH A LITTLE VICE CITY MAGIC <b>✦</b></span>
+      <span class="footer-hint">PRESS <kbd>↑</kbd><kbd>↓</kbd> TO EXPLORE</span>
+    </footer>
 
     <div v-if="isLoading" class="loading-screen">
       <div class="loading-grain"></div>
       <div class="loading-content">
         <div class="loading-main">
           <div class="loading-portrait-frame">
-            <img :src="portrait" alt="Illustrated portrait of Purrity Ginaben" />
+            <img :src="portrait" alt="Illustrated portrait of Purrity Gwabeni" />
             <span>LOADING SCREEN ART</span>
           </div>
           <div class="loading-copy">
