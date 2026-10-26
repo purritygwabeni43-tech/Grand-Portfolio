@@ -164,7 +164,7 @@ a { color: inherit; text-decoration: none; }
 .certificate-carousel { display: flex; align-items: center; gap: 12px; }
 .carousel-arrow { flex: 0 0 31px; width: 31px; height: 31px; border: 1px solid rgba(255,255,255,.22); background: transparent; color: #eac27e; font-size: 16px; transition: background .2s; }
 .carousel-arrow:hover { background: rgba(243,189,105,.16); }
-.certificate-card { position: relative; display: flex; align-items: center; flex: 1; min-height: 172px; overflow: hidden; padding: 24px; background: linear-gradient(135deg,#d6c39c,#bca77e 55%,#8e785a); color: #30302b; }
+.certificate-card { position: relative; display: flex; align-items: center; flex: 1; min-height: 172px; overflow: hidden; padding: 24px; background: linear-gradient(135deg,#d6c39c,#bca77e 55%,#8e785a); color: #30302b; text-decoration: none; }
 .certificate-card::before { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(64,56,42,.4); }
 .certificate-stamp { position: relative; display: grid; place-items: center; flex: 0 0 69px; width: 69px; height: 69px; margin-right: 19px; border: 1px solid #785d35; border-radius: 50%; color: #5b462a; font: 700 23px/.8 var(--display); }
 .certificate-stamp span { font: 700 6px 'DM Sans',sans-serif; letter-spacing: .1em; }
@@ -172,6 +172,9 @@ a { color: inherit; text-decoration: none; }
 .certificate-overline, .certificate-year { color: #685738; font-size: 7px; font-weight: 700; letter-spacing: .1em; }
 .certificate-info h3 { max-width: 230px; margin: 8px 0 4px; font: 700 22px/1 var(--display); text-transform: uppercase; }
 .certificate-info p { margin: 0 0 13px; color: #5b5345; font-size: 9px; }
+.certificate-open-label { display: block; margin-top: 8px; color: #685738; font-size: 6px; font-weight: 700; letter-spacing: .1em; }
+.certificate-preview { position: absolute; z-index: 2; inset: 0; width: 100%; height: 100%; padding: 12px; background: rgba(20,27,28,.97); object-fit: contain; opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s; }
+.certificate-card:hover .certificate-preview, .certificate-card:focus-visible .certificate-preview { opacity: 1; visibility: visible; }
 .certificate-ribbon { position: absolute; top: 0; right: 0; width: 44px; height: 44px; display: grid; place-items: start end; padding: 6px; background: #445d55; color: #f0ca84; clip-path: polygon(0 0,100% 0,100% 100%); }
 .carousel-dots { display: flex; justify-content: center; gap: 7px; margin-top: 16px; }
 .carousel-dots button { width: 5px; height: 5px; padding: 0; border-radius: 50%; background: #62645e; }

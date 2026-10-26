@@ -5,6 +5,12 @@ import fitWellThumbnail from '../assets/fitwell.png'
 import marketPulseThumbnail from '../assets/market pulse.png'
 import modernTechThumbnail from '../assets/modern tech.png'
 import rentosphereThumbnail from '../assets/rentosphere.png'
+import youthCodeAchievement from '../assets/Modern YouthCode Achievement Certificate.png'
+import youthCodeExcellence from '../assets/YouthCode Project Certificate of Excellence (1).png'
+import cybersecurityCertificatePreview from '../assets/cyber cert.png'
+import dataScienceCertificatePreview from '../assets/Data science cert.png'
+import cybersecurityCertificate from '../assets/Introduction_to_Cybersecurity_certificate_purritygwabeni43-gmail-com_3bab2a32-d610-4bd4-909e-62d9d6c8f545.pdf'
+import dataScienceCertificate from '../assets/Introduction_to_Data_Science_certificate_purritygwabeni43-gmail-com_35f5a10e-b6ce-4c0e-b532-9d52f1f511d9.pdf'
 
 const sections = [
   { id: 'home', label: 'Home', number: '01', icon: '⌂', building: 'SAFEHOUSE', color: 'mint' },
@@ -73,24 +79,32 @@ const certificates = [
     issuer: 'Life Choices Academy · YouthCode',
     year: '2 OCT 2026',
     mark: '01',
+    image: youthCodeAchievement,
+    link: youthCodeAchievement,
   },
   {
     name: 'Coding Wizard — Certificate of Excellence',
     issuer: 'YouthCode Project',
     year: '2 OCT 2026',
     mark: '02',
+    image: youthCodeExcellence,
+    link: youthCodeExcellence,
   },
   {
     name: 'Introduction to Cybersecurity',
     issuer: 'Cisco Networking Academy',
     year: '31 AUG 2026',
     mark: '03',
+    image: cybersecurityCertificatePreview,
+    link: cybersecurityCertificate,
   },
   {
     name: 'Introduction to Data Science',
     issuer: 'Cisco Networking Academy',
     year: '6 AUG 2026',
     mark: '04',
+    image: dataScienceCertificatePreview,
+    link: dataScienceCertificate,
   },
 ]
 
@@ -277,16 +291,24 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
           <h2>Proof of <em>progress.</em></h2>
           <div class="certificate-carousel">
             <button class="carousel-arrow" type="button" aria-label="Previous certificate" @click="changeCertificate(-1)">←</button>
-            <article class="certificate-card">
+            <a
+              class="certificate-card"
+              :href="activeCertificateData.link"
+              :aria-label="`Open ${activeCertificateData.name} certificate in a new tab`"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <div class="certificate-stamp">PG<br /><span>VERIFIED</span></div>
               <div class="certificate-info">
                 <span class="certificate-overline">CERTIFICATE {{ activeCertificateData.mark }} / 0{{ certificates.length }}</span>
                 <h3>{{ activeCertificateData.name }}</h3>
                 <p>{{ activeCertificateData.issuer }}</p>
                 <span class="certificate-year">ISSUED {{ activeCertificateData.year }}</span>
+                <span class="certificate-open-label">HOVER TO PREVIEW · CLICK TO OPEN</span>
               </div>
               <div class="certificate-ribbon">✦</div>
-            </article>
+              <img class="certificate-preview" :src="activeCertificateData.image" alt="" aria-hidden="true" />
+            </a>
             <button class="carousel-arrow" type="button" aria-label="Next certificate" @click="changeCertificate(1)">→</button>
           </div>
           <div class="carousel-dots" aria-label="Certificate position">
