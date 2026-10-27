@@ -28,7 +28,60 @@ const profile = {
     'I’m a fullstack developer who enjoys shaping clear ideas into useful, polished web experiences. I work across the stack with JavaScript, Python, and PHP, and love learning the tools that make good products feel effortless.',
 }
 
-const skills = ['JavaScript', 'Vue.js', 'Python', 'PHP', 'Node.js', 'MySQL', 'Git']
+const skills = ['HTML', 'CSS', 'JavaScript', 'Vue.js', 'Python', 'PHP', 'Node.js', 'MySQL', 'Git']
+
+const continents = [
+  { name: 'Africa', code: 'africa' },
+  { name: 'Asia', code: 'asia' },
+  { name: 'Europe', code: 'europe' },
+  { name: 'North America', code: 'north-america' },
+  { name: 'South America', code: 'south-america' },
+  { name: 'Oceania', code: 'oceania' },
+  { name: 'Antarctica', code: 'antarctica' },
+]
+
+const countryCodesByContinent = {
+  Africa:
+    'DZ AO BJ BW BF BI CV CM CF TD KM CG CD CI DJ EG GQ ER SZ ET GA GM GH GN GW KE LS LR LY MG MW ML MR MU MA MZ NA NE NG RW ST SN SC SL SO ZA SS SD TZ TG TN UG EH ZM ZW',
+  Asia:
+    'AF AM AZ BH BD BT BN KH CN CY GE IN ID IR IQ IL JP JO KZ KW KG LA LB MY MV MN MM NP KP OM PK PS PH QA SA SG KR LK SY TW TJ TH TL TR TM AE UZ VN YE',
+  Europe:
+    'AX AL AD AT BY BE BA BG HR CZ DK EE FO FI FR DE GI GR GG HU IS IE IM IT JE XK LV LI LT LU MT MD MC ME NL MK NO PL PT RO RU SM RS SK SI ES SJ SE CH UA GB VA',
+  'North America':
+    'AI AG AW BS BB BZ BM BQ VG CA KY CR CU CW DM DO SV GL GD GP GT HT HN JM MQ MX MS NI PA PR BL KN LC MF PM VC SX TT TC VI US',
+  'South America': 'AR BO BR CL CO EC FK GF GY PY PE SR UY VE',
+  Oceania:
+    'AS AU CX CC CK FJ PF GU KI MH FM NR NC NZ NU NF MP PW PG PN WS SB TK TO TV UM VU WF',
+  Antarctica: '',
+}
+
+const countryNames = new Intl.DisplayNames(['en'], { type: 'region' })
+const countriesByContinent = Object.fromEntries(
+  Object.entries(countryCodesByContinent).map(([continent, codes]) => [
+    continent,
+    (codes ? codes.split(' ') : [])
+      .map((code) => ({ code, name: countryNames.of(code) }))
+      .filter((country) => country.name && country.name !== country.code)
+      .sort((first, second) => first.name.localeCompare(second.name)),
+  ]),
+)
+const countries = [...['ZA', 'US', 'GB', 'JP', 'AU'].map((code) => {
+  const continent = Object.entries(countryCodesByContinent).find(([, codes]) =>
+    codes.split(' ').includes(code),
+  )?.[0]
+
+  return { code, name: countryNames.of(code), continent }
+}), { code: 'AQ', name: 'Antarctica', continent: 'Antarctica' }]
+
+const worldThemes = {
+  Africa: { accent: '#e9ad55', skyTop: '#28372d', skyMid: '#6b6241', horizon: '#c48c58', ground: '#a56a4a', building: '#bc8863', glow: 'rgba(255,205,118,.42)' },
+  Asia: { accent: '#f08d6c', skyTop: '#282b45', skyMid: '#62536a', horizon: '#c87c69', ground: '#985b55', building: '#b77d76', glow: 'rgba(255,160,131,.4)' },
+  Europe: { accent: '#87b8ef', skyTop: '#1d3042', skyMid: '#45687a', horizon: '#9a9fa0', ground: '#777f86', building: '#96989a', glow: 'rgba(160,208,255,.38)' },
+  'North America': { accent: '#65c9be', skyTop: '#19323c', skyMid: '#397174', horizon: '#c38368', ground: '#a25f51', building: '#b98368', glow: 'rgba(118,237,215,.38)' },
+  'South America': { accent: '#8bcf86', skyTop: '#193a38', skyMid: '#3c7861', horizon: '#d29a62', ground: '#9d674a', building: '#b98561', glow: 'rgba(169,238,133,.38)' },
+  Oceania: { accent: '#68c7d3', skyTop: '#193743', skyMid: '#377988', horizon: '#e0a77a', ground: '#b26f59', building: '#c08b6b', glow: 'rgba(127,231,240,.4)' },
+  Antarctica: { accent: '#a9c9f2', skyTop: '#1a2e45', skyMid: '#577c96', horizon: '#b3c8d1', ground: '#738fa4', building: '#a3b6c1', glow: 'rgba(190,229,255,.45)' },
+}
 
 const projects = [
   {
@@ -118,8 +171,31 @@ const email = 'purritygwabeni43@gmail.com'
 const isLoading = ref(true)
 const activeSection = ref('home')
 const activeCertificate = ref(0)
+const worldPickerOpen = ref(false)
+const selectedContinent = ref('North America')
+const selectedCountryCode = ref('')
 const activePanel = computed(() => sections.find((section) => section.id === activeSection.value))
 const activeCertificateData = computed(() => certificates[activeCertificate.value])
+const selectedCountry = computed(() => countries.find((country) => country.code === selectedCountryCode.value))
+const currentLocation = computed(() => selectedCountry.value?.name || selectedContinent.value)
+const selectedContinentCode = computed(
+  () => continents.find((continent) => continent.name === selectedContinent.value).code,
+)
+const worldThemeStyle = computed(() => ({
+  '--gold': worldThemes[selectedContinent.value].accent,
+  '--theme-sky-top': worldThemes[selectedContinent.value].skyTop,
+  '--theme-sky-mid': worldThemes[selectedContinent.value].skyMid,
+  '--theme-horizon': worldThemes[selectedContinent.value].horizon,
+  '--theme-ground': worldThemes[selectedContinent.value].ground,
+  '--theme-building': worldThemes[selectedContinent.value].building,
+  '--theme-glow': worldThemes[selectedContinent.value].glow,
+}))
+
+function chooseCountry(code) {
+  selectedCountryCode.value = code
+  const country = countries.find((item) => item.code === code)
+  if (country) selectedContinent.value = country.continent
+}
 
 function enterCity() {
   isLoading.value = false
@@ -141,6 +217,8 @@ function changeCertificate(direction) {
 }
 
 function handleMapKeys(event) {
+  if (worldPickerOpen.value) return
+
   if (isLoading.value && event.key === 'Enter') {
     event.preventDefault()
     enterCity()
@@ -161,7 +239,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
 </script>
 
 <template>
-  <main class="portfolio-shell">
+  <main class="portfolio-shell" :style="worldThemeStyle">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Purrity Gwabeni portfolio home" @click.prevent="visitSection('home')">
         <span class="brand-mark">PG</span>
@@ -183,7 +261,6 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
 
       <div class="topbar-actions">
         <a class="availability" href="#contact" @click.prevent="visitSection('contact')">
-          <span class="availability-dot"></span>
           AVAILABLE FOR WORK
         </a>
         <button class="lobby-button" type="button" aria-label="Return to lobby loading screen" title="Return to lobby" @click="returnToLobby">
@@ -205,10 +282,21 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
         <p>Pick a building, take a look around.<br />Your next favorite thing is just around the corner.</p>
       </div>
 
-      <div class="map-label map-label-west">VICE CITY<br /><small>EST. ALWAYS IN MOTION</small></div>
-      <div class="map-label map-label-east">OCEAN DRIVE <span>→</span></div>
+      <div class="map-label map-label-west">{{ selectedCountry ? selectedContinent.toUpperCase() : 'VICE CITY' }}<br /><small>{{ selectedCountry ? 'WORLD TOUR' : 'EST. ALWAYS IN MOTION' }}</small></div>
+      <div class="map-label map-label-east">{{ selectedCountry ? currentLocation.toUpperCase() : 'OCEAN DRIVE' }} <span>→</span></div>
+      <button
+        class="world-picker-trigger"
+        type="button"
+        aria-controls="world-picker"
+        :aria-expanded="worldPickerOpen"
+        :aria-label="`Choose a world location. Current location: ${currentLocation}`"
+        @click="worldPickerOpen = true"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18M5.6 6.6h12.8M5.6 17.4h12.8" /></svg>
+        <span>CHANGE LOCATION</span>
+      </button>
 
-      <div class="city-ground">
+      <div class="city-ground" :class="`architecture-${selectedContinentCode}`">
         <div class="street street-back"></div>
         <div class="street street-front"></div>
         <div class="street-line"></div>
@@ -233,6 +321,9 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
             <span v-for="n in 6" :key="n" class="building-window"></span>
             <span class="building-door"></span>
           </span>
+          <span v-if="selectedContinentCode === 'antarctica'" class="building-igloo" aria-hidden="true">
+            <span class="igloo-entrance"></span>
+          </span>
           <span class="building-caption"><b>{{ section.number }}</b> {{ section.label }}</span>
         </button>
 
@@ -241,13 +332,13 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
           <img :src="portrait" alt="" />
           <span class="player-shadow"></span>
         </div>
-        <div class="player-tag" :style="{ left: `${10 + sections.findIndex((section) => section.id === activeSection) * 20}%` }"><span class="tag-dot"></span> YOU ARE HERE</div>
+        <div class="player-tag" :style="{ left: `${10 + sections.findIndex((section) => section.id === activeSection) * 20}%` }">YOU ARE HERE</div>
       </div>
 
-      <div class="map-coordinates"><span>MAP 01</span><span>26° 07' N&nbsp; 80° 08' W</span></div>
+      <div class="map-coordinates"><span>{{ selectedCountry ? `WORLD / ${selectedContinent.toUpperCase()}` : 'MAP 01' }}</span><span>{{ selectedCountry ? currentLocation.toUpperCase() : "26° 07' N  80° 08' W" }}</span></div>
 
       <aside class="mission-card" aria-label="Current portfolio section">
-        <div class="mission-topline"><span>NOW EXPLORING</span><span class="mission-signal">● LIVE</span></div>
+        <div class="mission-topline"><span>NOW EXPLORING</span></div>
         <div class="mission-content">
           <span class="mission-icon">{{ activePanel.icon }}</span>
           <div><small>{{ activePanel.number }} / 05</small><strong>{{ activePanel.label }}</strong></div>
@@ -367,6 +458,53 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
       <span class="footer-credit">MADE WITH A LITTLE VICE CITY MAGIC <b>✦</b></span>
       <span class="footer-hint">PRESS <kbd>↑</kbd><kbd>↓</kbd> TO EXPLORE</span>
     </footer>
+
+    <div
+      v-if="worldPickerOpen"
+      id="world-picker"
+      class="world-picker-backdrop"
+      @keydown.esc="worldPickerOpen = false"
+    >
+      <section class="world-picker-dialog" role="dialog" aria-modal="true" aria-labelledby="world-picker-title">
+        <button class="world-picker-close" type="button" aria-label="Close world selector" @click="worldPickerOpen = false">×</button>
+        <div class="globe-art" aria-hidden="true">
+          <svg viewBox="0 0 240 240">
+            <defs><clipPath id="globe-clip"><circle cx="120" cy="120" r="105" /></clipPath></defs>
+            <circle class="globe-ocean" cx="120" cy="120" r="105" />
+            <g class="globe-grid" clip-path="url(#globe-clip)">
+              <ellipse cx="120" cy="120" rx="45" ry="105" />
+              <ellipse cx="120" cy="120" rx="82" ry="105" />
+              <ellipse cx="120" cy="120" rx="105" ry="43" />
+              <ellipse cx="120" cy="120" rx="105" ry="76" />
+              <path d="M15 120h210" />
+              <path class="globe-land" d="m35 64 18-18 24-5 13 9 17-5 12 11-8 14-17 5-7 13-15 5-8 16-15-4-8-16-12-6-7-12Zm53 46 15 5 7 16-7 21-11 16-8-15 4-20-7-11Zm47-57 15-10 15 3 9 13 19 5 7 13-11 10-14-4-10 8-13-4-7 12-12-2-10-14 4-15-10-8Zm25 55 20-7 15 7 6 16-13 14-17-3-12-12Zm-5 37 14 7 6 16-12 8-12-12Zm-68-97 7-12 11-2 6 8-5 10-11 4Zm-57 91 19 2 9 10-6 12-17 2-9-12Z" />
+            </g>
+            <circle class="globe-highlight" cx="120" cy="120" r="105" />
+          </svg>
+          <span class="globe-orbit"></span>
+          <span class="globe-caption">THE WORLD IS YOURS</span>
+        </div>
+        <div class="world-picker-content">
+          <span class="panel-kicker">PICK YOUR NEXT DESTINATION</span>
+          <h2 id="world-picker-title">Explore the <em>world.</em></h2>
+          <p class="world-picker-copy">Choose a country to transform the city colors and map theme.</p>
+          <div class="country-grid" aria-label="Choose a country">
+            <button
+              v-for="country in countries"
+              :key="country.code"
+              type="button"
+              :class="{ 'is-selected': selectedCountryCode === country.code }"
+              :aria-pressed="selectedCountryCode === country.code"
+              @click="chooseCountry(country.code)"
+            >{{ country.name }}</button>
+          </div>
+          <div class="world-picker-footer">
+            <span>CURRENT DESTINATION: <b>{{ currentLocation.toUpperCase() }}</b></span>
+            <button type="button" @click="worldPickerOpen = false">SET DESTINATION <span>↗</span></button>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <div v-if="isLoading" class="loading-screen">
       <div class="loading-grain"></div>
