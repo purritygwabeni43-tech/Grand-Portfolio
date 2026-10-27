@@ -285,6 +285,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
       <div class="map-label map-label-west">{{ selectedCountry ? selectedContinent.toUpperCase() : 'VICE CITY' }}<br /><small>{{ selectedCountry ? 'WORLD TOUR' : 'EST. ALWAYS IN MOTION' }}</small></div>
       <div class="map-label map-label-east">{{ selectedCountry ? currentLocation.toUpperCase() : 'OCEAN DRIVE' }} <span>→</span></div>
       <button
+        v-if="activeSection === 'home'"
         class="world-picker-trigger"
         type="button"
         aria-controls="world-picker"
