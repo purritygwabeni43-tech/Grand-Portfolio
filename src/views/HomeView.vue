@@ -167,6 +167,9 @@ const contactLinks = [
   { label: 'Email', href: 'mailto:purritygwabeni43@gmail.com' },
 ]
 const email = 'purritygwabeni43@gmail.com'
+const contactForm = ref({ name: '', email: '', message: '' })
+const contactFormStatus = ref('idle')
+const contactFormMessage = ref('')
 
 const isLoading = ref(true)
 const activeSection = ref('home')
@@ -216,6 +219,39 @@ function changeCertificate(direction) {
     (activeCertificate.value + direction + certificates.length) % certificates.length
 }
 
+async function submitContactForm() {
+  contactFormStatus.value = 'sending'
+  contactFormMessage.value = ''
+
+  try {
+    const response = await fetch('https://formspree.io/f/moeeweor', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(contactForm.value),
+    })
+    const result = await response.json()
+
+    if (!response.ok) {
+      const errorMessage = result.errors?.map((error) => error.message).join(' ') || ''
+      throw new Error(errorMessage || 'Your message could not be sent. Please try again.')
+    }
+
+    contactForm.value = { name: '', email: '', message: '' }
+    contactFormStatus.value = 'success'
+    contactFormMessage.value = 'Message sent. Thanks for getting in touch!'
+  } catch (error) {
+    console.error('Contact form submission failed:', error)
+    contactFormStatus.value = 'error'
+    contactFormMessage.value =
+      error instanceof Error && error.message !== 'Failed to fetch'
+        ? error.message
+        : 'Unable to send your message right now. Please try again or email me directly.'
+  }
+}
+
 function handleMapKeys(event) {
   if (worldPickerOpen.value) return
 
@@ -242,7 +278,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
   <main class="portfolio-shell" :style="worldThemeStyle">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Purrity Gwabeni portfolio home" @click.prevent="visitSection('home')">
-        <span class="brand-mark">PG</span>
+        <img class="brand-mark" :src="portrait" alt="" aria-hidden="true" />
         <span class="brand-name">Purrity <b>Gwabeni</b></span>
       </a>
 
@@ -412,7 +448,33 @@ onUnmounted(() => document.removeEventListener('keydown', handleMapKeys))
           <span class="panel-kicker">YOUR NEXT MISSION STARTS HERE</span>
           <h2>Let’s make something <em>great.</em></h2>
           <p class="contact-copy">Have a project in mind, an opportunity, or just want to say hello? My inbox is open.</p>
-          <a class="contact-cta" :href="`mailto:${email}`">GET IN TOUCH <span>↗</span></a>
+          <form class="contact-form" @submit.prevent="submitContactForm">
+            <label>
+              YOUR NAME
+              <input v-model="contactForm.name" autocomplete="name" name="name" required />
+            </label>
+            <label>
+              YOUR EMAIL
+              <input v-model="contactForm.email" autocomplete="email" name="email" type="email" required />
+            </label>
+            <label>
+              YOUR MESSAGE
+              <textarea v-model="contactForm.message" name="message" rows="3" required></textarea>
+            </label>
+            <button class="contact-cta" type="submit" :disabled="contactFormStatus === 'sending'">
+              {{ contactFormStatus === 'sending' ? 'SENDING…' : 'SEND MESSAGE' }} <span>↗</span>
+            </button>
+            <p
+              v-if="contactFormMessage"
+              class="contact-form-status"
+              :class="`is-${contactFormStatus}`"
+              role="status"
+              aria-live="polite"
+            >
+              {{ contactFormMessage }}
+            </p>
+          </form>
+          <p class="contact-fallback">Prefer email? <a :href="`mailto:${email}`">{{ email }}</a></p>
           <div class="contact-details">
             <span>TECH STACK <b>{{ skills.join(' · ') }}</b></span>
             <span>FIND ME <b><a v-for="(link, index) in contactLinks" :key="link.label" :href="link.href" target="_blank" rel="noopener noreferrer">{{ index ? ' · ' : '' }}{{ link.label }}</a></b></span>

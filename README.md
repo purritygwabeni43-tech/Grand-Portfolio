@@ -7,8 +7,8 @@ About, Projects, Certifications, and Contact sections by selecting buildings on 
 
 Edit the `profile`, `projects`, and `certificates` data near the top of
 [`src/views/HomeView.vue`](./src/views/HomeView.vue) to add your bio, real project links and details,
-certificate names and issuers, location, and contact email. The contact button currently uses
-`your.email@example.com` as a placeholder. The loading screen and in-world character use
+certificate names and issuers, location, and contact email. The contact form submits through
+Formspree, and the direct email link is configured alongside it. The loading screen and in-world character use
 [`src/assets/purrity-art.png`](./src/assets/purrity-art.png).
 
 ## Recommended IDE Setup
